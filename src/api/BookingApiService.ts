@@ -1,4 +1,4 @@
-import axiosInstance from './AxiosConfig.ts';
+import { bookingAxios } from './AxiosConfig.ts';
 import type {
   BookingRequestDto,
   UpdateBookingRequestDto,
@@ -6,7 +6,7 @@ import type {
 
 export const getAllBookings = async () => {
   try {
-    const response = await axiosInstance.get('/api/bookings/my');
+    const response = await bookingAxios.get('/api/bookings/my');
     return response.data;
   } catch (error) {
     console.error('Error getting all user bookings', error);
@@ -19,7 +19,7 @@ export const editBooking = async (
   updatedBooking: UpdateBookingRequestDto,
 ) => {
   try {
-    const response = await axiosInstance.put(
+    const response = await bookingAxios.put(
       `/api/bookings/${bookingNumber}`,
       updatedBooking,
     );
@@ -32,7 +32,7 @@ export const editBooking = async (
 
 export const createBooking = async (newBooking: BookingRequestDto) => {
   try {
-    const response = await axiosInstance.post('/api/bookings', newBooking);
+    const response = await bookingAxios.post('/api/bookings', newBooking);
     return response.data;
   } catch (error) {
     console.error('Error creating new booking', error);
@@ -42,7 +42,7 @@ export const createBooking = async (newBooking: BookingRequestDto) => {
 
 export const deleteBooking = async (bookingNumber: string) => {
   try {
-    const response = await axiosInstance.delete(
+    const response = await bookingAxios.delete(
       `/api/bookings/${bookingNumber}`,
     );
     return response.data;

@@ -3,7 +3,6 @@ import { useAuth } from '../../hooks/useAuth.tsx';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar.tsx';
 import { loginUser } from '../../api/AuthenticationApiService.ts';
-import { apiBaseUrl } from '../../api/AxiosConfig.ts';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -41,11 +40,11 @@ const LoginPage = () => {
 
   //TODO needs some work on these two, will move to own file.
   const handleGoogleLogin = () => {
-    window.location.href = `${apiBaseUrl}/oauth2/authorization/google`;
+    window.location.href = `${import.meta.env.VITE_USER_API_URL || 'http://localhost:8084'}/oauth2/authorization/google`;
   };
 
   const handleGithubLogin = () => {
-    window.location.href = `${apiBaseUrl}/oauth2/authorization/github`;
+    window.location.href = `${import.meta.env.VITE_USER_API_URL || 'http://localhost:8084'}/oauth2/authorization/github`;
   };
 
   return (

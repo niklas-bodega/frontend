@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth.tsx';
-import axiosInstance from '../../api/AxiosConfig.ts';
+import { userAxios } from '../../api/AxiosConfig.ts';
 
 const OAuthRedirectPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
   useEffect(() => {
-    axiosInstance
+    userAxios
       .get('/api/user')
-      .then((response) => {
+      .then((response: any) => {
         login(response.data.email);
         console.log(`User ${response.data.name} is logged in`);
         navigate('/');

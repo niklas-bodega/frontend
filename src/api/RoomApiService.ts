@@ -1,11 +1,11 @@
 //TODO calls regarding rooms
 
-import axiosInstance from './AxiosConfig.ts';
+import {bookingAxios} from './AxiosConfig.ts';
 import type { AvailableRoomsDTO } from '../types/AvailableRoomsDTO.ts';
 
 export const getAllRooms = async () => {
   try {
-    const response = await axiosInstance.get('/api/rooms');
+    const response = await bookingAxios.get('/api/rooms');
     return response.data;
   } catch (error) {
     console.error('Error getting all rooms', error);
@@ -19,7 +19,7 @@ export const checkIfRoomTypeAvailable = async (
   checkOutDate: string,
   bookingNumber: string,
 ): Promise<boolean> => {
-  const response = await axiosInstance.get(
+  const response = await bookingAxios.get(
     `/api/rooms/roomTypes/available/${roomTypeId}`,
     {
       params: { checkInDate, checkOutDate, bookingNumber },
@@ -34,7 +34,7 @@ export const getAllAvailableRooms = async (
   nrOfGuests: number,
 ): Promise<AvailableRoomsDTO[]> => {
   try {
-    const response = await axiosInstance.get('/api/rooms/roomTypes/available', {
+    const response = await bookingAxios.get('/api/rooms/roomTypes/available', {
       params: { checkInDate, checkOutDate, nrOfGuests },
     });
     return response.data;

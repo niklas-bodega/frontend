@@ -5,7 +5,7 @@ import {
   useEffect,
   useCallback,
 } from 'react';
-import axiosInstance from '../api/AxiosConfig.ts';
+import { userAxios } from '../api/AxiosConfig';
 import { logoutUser } from '../api/AuthenticationApiService.ts';
 
 interface AuthContextType {
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [clearAuth]);
 
   useEffect(() => {
-    axiosInstance
+    userAxios
       .get('/api/user')
       .then((response) => {
         login(response.data.email);

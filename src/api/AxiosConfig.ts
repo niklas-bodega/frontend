@@ -1,28 +1,39 @@
-import axios from "axios";
+import axios, { type AxiosInstance } from 'axios';
 
-const configuredApiBaseUrl =
-    import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL;
+// Hjälpfunktion för att lägga till er interceptor på en instans
+const applyInterceptors = (instance: AxiosInstance) => {
+    instance.interceptors.request.use((config) => {
+        const csrfToken = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("XSRF-TOKEN="))
+          ?.split("=")[1];
 
-export const apiBaseUrl = (
-    configuredApiBaseUrl || "http://localhost:8080"
-).replace(/\/+$/, "");
+        if (csrfToken) {
+            config.headers["X-XSRF-TOKEN"] = csrfToken;
+        }
+        return config;
+    });
+    return instance;
+};
 
-const axiosInstance = axios.create({
-    baseURL: apiBaseUrl,
-    withCredentials: true,
-});
+// Skapa och exportera instanser för de olika tjänsterna
+export const userAxios = applyInterceptors(
+  axios.create({
+      baseURL: (import.meta.env.VITE_USER_API_URL || "http://localhost:8084").replace(/\/+$/, ""),
+      withCredentials: true,
+  })
+);
 
-axiosInstance.interceptors.request.use((config) => {
-    const csrfToken = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("XSRF-TOKEN="))
-        ?.split("=")[1];
+export const bookingAxios = applyInterceptors(
+  axios.create({
+      baseURL: (import.meta.env.VITE_BOOKING_API_URL || "http://localhost:8083").replace(/\/+$/, ""),
+      withCredentials: true,
+  })
+);
 
-    if (csrfToken) {
-        config.headers["X-XSRF-TOKEN"] = csrfToken;
-    }
-
-    return config;
-});
-
-export default axiosInstance;
+export const reviewAxios = applyInterceptors(
+  axios.create({
+      baseURL: (import.meta.env.VITE_REVIEW_API_URL || "http://localhost:8086").replace(/\/+$/, ""),
+      withCredentials: true,
+  })
+);
