@@ -44,6 +44,7 @@ const RoomsPageMainComponent = ({ rooms }: { rooms: Room[] }) => {
           {featuredRoom && (
             <FeaturedRoom
               room={featuredRoom.roomType}
+              rating={ratingByRoomsType[featuredRoom.roomType.id]}
               onBookNow={setSelectedRoom}
             />
           )}
