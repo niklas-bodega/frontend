@@ -5,7 +5,14 @@ import RoomAvailabilityModal from '../../RoomsPage/components/RoomAvailabilityMo
 import { useState } from 'react';
 import type { RoomType } from '../../../types/RoomType.ts';
 
-const RoomSection = ({ rooms }: { rooms: Room[] }) => {
+
+type RoomsSectionProps = {
+  rooms: Room[];
+  ratingsByRoomType: Record<number, number>;
+
+}
+
+const RoomSection = ({ rooms, ratingsByRoomType }:  RoomsSectionProps ) => {
   const uniqueRoomsByType = Array.from(
     new Map(rooms?.map((room) => [room.roomType.type, room])).values(),
   );
@@ -43,6 +50,7 @@ const RoomSection = ({ rooms }: { rooms: Room[] }) => {
           <RoomCard
             key={room.id}
             room={room.roomType}
+            rating={ratingsByRoomType[room.roomType.id]}
             onBookNow={(room) => setSelectedRoom(room)}
           />
         ))}

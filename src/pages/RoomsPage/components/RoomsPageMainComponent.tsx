@@ -6,10 +6,12 @@ import RoomPageHeader from './RoomPageHeader.tsx';
 import { useState } from 'react';
 import type { RoomType } from '../../../types/RoomType.ts';
 import RoomAvailabilityModal from './RoomAvailabilityModal.tsx';
+import { useRatingsByRoomType } from '../../../hooks/useRatingsByRoomType.tsx';
 
 const RoomsPageMainComponent = ({ rooms }: { rooms: Room[] }) => {
   const featuredRoom = rooms.find((r) => r.roomType.featured);
   const regularRooms = rooms.filter((r) => !r.roomType.featured);
+  const ratingByRoomsType = useRatingsByRoomType();
 
   const uniqueRoomsByType = Array.from(
     new Map(regularRooms?.map((room) => [room.roomType.type, room])).values(),
@@ -50,6 +52,7 @@ const RoomsPageMainComponent = ({ rooms }: { rooms: Room[] }) => {
               <RoomCard
                 key={room.id}
                 room={room.roomType}
+                rating={ratingByRoomsType[room.roomType.id]}
                 onBookNow={(room) => setSelectedRoom(room)}
               />
             ))}
