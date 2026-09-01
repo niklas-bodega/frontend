@@ -1,6 +1,7 @@
 import type { Booking } from '../../../../types/Booking.ts';
 import {
   formatDate,
+  isExpired,
   nightsBetween,
   statusLabels,
   statusStyles,
@@ -16,6 +17,7 @@ const BookingCard = ({
   onCancel: (bookingNumber: string) => void;
 }) => {
   const isCancelled = booking.status === 'CANCELLED';
+  const isBookingExpired = !isCancelled && isExpired(booking.checkOutDate);
   const nights = nightsBetween(booking.checkInDate, booking.checkOutDate);
 
   return (
@@ -73,14 +75,14 @@ const BookingCard = ({
       <div className="flex flex-col gap-2 flex-shrink-0">
         <button
           onClick={() => onEdit(booking)}
-          disabled={isCancelled}
+          disabled={isCancelled || isBookingExpired}
           className="border border-orange-900 text-orange-900 px-4 py-2 rounded text-xs font-bold uppercase tracking-widest hover:bg-orange-50 transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Edit
         </button>
         <button
           onClick={() => onCancel(booking.bookingNumber)}
-          disabled={isCancelled}
+          disabled={isCancelled || isBookingExpired}
           className="border border-red-700 text-red-700 px-4 py-2 rounded text-xs font-bold uppercase tracking-widest hover:bg-red-50 transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Cancel
