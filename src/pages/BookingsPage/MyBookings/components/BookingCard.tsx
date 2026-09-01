@@ -11,10 +11,12 @@ const BookingCard = ({
   booking,
   onEdit,
   onCancel,
+  onLeaveReview,
 }: {
   booking: Booking;
   onEdit: (booking: Booking) => void;
   onCancel: (bookingNumber: string) => void;
+  onLeaveReview: (booking: Booking) => void;
 }) => {
   const isCancelled = booking.status === 'CANCELLED';
   const isBookingExpired = !isCancelled && isExpired(booking.checkOutDate);
@@ -87,6 +89,14 @@ const BookingCard = ({
         >
           Cancel
         </button>
+        {isBookingExpired && (
+          <button
+            onClick={() => onLeaveReview(booking)}
+            className="border border-stone-400 text-stone-600 px-4 py-2 rounded text-xs font-bold uppercase tracking-widest hover:bg-stone-50 transition"
+          >
+            Leave Review
+          </button>
+        )}
       </div>
     </div>
   );
