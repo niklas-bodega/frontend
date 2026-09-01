@@ -24,3 +24,7 @@ export const nightsBetween = (checkIn: string, checkOut: string) => {
   const diff = new Date(checkOut).getTime() - new Date(checkIn).getTime();
   return Math.round(diff / (1000 * 60 * 60 * 24));
 };
+
+export const isExpired = (checkOutDate: string) : boolean => {
+  return new Date(checkOutDate) < new Date();
+}
