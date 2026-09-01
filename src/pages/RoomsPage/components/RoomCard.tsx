@@ -1,11 +1,14 @@
 import badgeStyles from './BadgeStyles.tsx';
 import type { RoomType } from '../../../types/RoomType.ts';
+import StarRating from '../../../components/StarRatingProps.tsx';
 
 const RoomCard = ({
   room,
+  rating,
   onBookNow,
 }: {
   room: RoomType;
+  rating: number;
   onBookNow: (room: RoomType) => void;
 }) => {
   return (
@@ -22,6 +25,11 @@ const RoomCard = ({
           {room.type}
         </span>
         <h3 className="font-serif text-lg text-stone-800 mb-1">{room.name}</h3>
+        {rating !== undefined ? (
+          <StarRating rating={rating} />
+        ) : (
+          <span className="text-sm text-stone-400">No reviews yet</span>
+        )}
         <p className="text-sm text-stone-500 leading-relaxed mb-4">
           {room.description}
         </p>

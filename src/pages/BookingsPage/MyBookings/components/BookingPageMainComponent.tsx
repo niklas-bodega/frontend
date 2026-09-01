@@ -7,10 +7,12 @@ const BookingPageMainComponent = ({
   bookings,
   handleEdit,
   handleCancel,
+  handleLeaveReview,
 }: {
   bookings: Booking[];
   handleEdit: (booking: Booking) => void;
   handleCancel: (bookingNumber: string) => void;
+  handleLeaveReview: (booking: Booking) => void;
 }) => {
   return (
     <div className="min-h-screen bg-stone-100">
@@ -49,6 +51,7 @@ const BookingPageMainComponent = ({
                 booking={booking}
                 onEdit={handleEdit}
                 onCancel={handleCancel}
+                onLeaveReview={handleLeaveReview}
               />
             ))}
           </div>

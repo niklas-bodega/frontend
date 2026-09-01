@@ -1,6 +1,7 @@
 import type { Booking } from '../../../../types/Booking.ts';
 import {
   formatDate,
+  isExpired,
   nightsBetween,
   statusLabels,
   statusStyles,
@@ -10,12 +11,15 @@ const BookingCard = ({
   booking,
   onEdit,
   onCancel,
+  onLeaveReview,
 }: {
   booking: Booking;
   onEdit: (booking: Booking) => void;
   onCancel: (bookingNumber: string) => void;
+  onLeaveReview: (booking: Booking) => void;
 }) => {
   const isCancelled = booking.status === 'CANCELLED';
+  const isBookingExpired = !isCancelled && isExpired(booking.checkOutDate);
   const nights = nightsBetween(booking.checkInDate, booking.checkOutDate);
 
   return (
@@ -60,9 +64,13 @@ const BookingCard = ({
 
         <div className="flex items-center gap-3">
           <span
-            className={`text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full ${statusStyles[booking.status]}`}
+            className={`text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full ${
+              isBookingExpired
+                ? 'bg-stone-200 text-stone-500'
+                : statusStyles[booking.status]
+            }`}
           >
-            {statusLabels[booking.status]}
+            {isBookingExpired ? 'Expired' : statusLabels[booking.status]}
           </span>
           {booking.extraBed && (
             <span className="text-xs text-stone-400">Extra bed included</span>
@@ -73,18 +81,26 @@ const BookingCard = ({
       <div className="flex flex-col gap-2 flex-shrink-0">
         <button
           onClick={() => onEdit(booking)}
-          disabled={isCancelled}
+          disabled={isCancelled || isBookingExpired}
           className="border border-orange-900 text-orange-900 px-4 py-2 rounded text-xs font-bold uppercase tracking-widest hover:bg-orange-50 transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Edit
         </button>
         <button
           onClick={() => onCancel(booking.bookingNumber)}
-          disabled={isCancelled}
+          disabled={isCancelled || isBookingExpired}
           className="border border-red-700 text-red-700 px-4 py-2 rounded text-xs font-bold uppercase tracking-widest hover:bg-red-50 transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Cancel
         </button>
+        {isBookingExpired && (
+          <button
+            onClick={() => onLeaveReview(booking)}
+            className="border border-stone-400 text-stone-600 px-4 py-2 rounded text-xs font-bold uppercase tracking-widest hover:bg-stone-50 transition"
+          >
+            Leave Review
+          </button>
+        )}
       </div>
     </div>
   );
