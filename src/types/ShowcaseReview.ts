@@ -1,4 +1,4 @@
-export interface ShowcaseReviewDto {
+export interface ShowcaseReview {
   reviewId: number;
   comment: string;
   rating: number;
