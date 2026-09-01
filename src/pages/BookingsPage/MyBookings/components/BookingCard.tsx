@@ -64,9 +64,13 @@ const BookingCard = ({
 
         <div className="flex items-center gap-3">
           <span
-            className={`text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full ${statusStyles[booking.status]}`}
+            className={`text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full ${
+              isBookingExpired
+                ? 'bg-stone-200 text-stone-500'
+                : statusStyles[booking.status]
+            }`}
           >
-            {statusLabels[booking.status]}
+            {isBookingExpired ? 'Expired' : statusLabels[booking.status]}
           </span>
           {booking.extraBed && (
             <span className="text-xs text-stone-400">Extra bed included</span>

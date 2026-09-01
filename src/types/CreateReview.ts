@@ -4,4 +4,5 @@ export interface CreateReviewInterface {
   rating: number;
   bookingNumber: string;
   roomTypeId: number;
+  roomTypeName: string;
 }

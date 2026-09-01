@@ -32,6 +32,7 @@ const ReviewModal = ({
         comment,
         bookingNumber: booking.bookingNumber,
         roomTypeId: booking.room.roomType.id,
+        roomTypeName: booking.room.roomType.name,
       });
       onSubmitted();
       onClose();

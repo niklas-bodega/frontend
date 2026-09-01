@@ -21,3 +21,13 @@ export const createReview = async (newReview : CreateReviewInterface) => {
     throw error;
   }
 };
+
+export const getReviewForShowcase = async () => {
+  try{
+    const response = await reviewAxios.get('/api/review/showcase');
+    return response.data;
+  } catch (error) {
+    console.error('Error getting review for showcase', error);
+    throw error;
+  }
+}
