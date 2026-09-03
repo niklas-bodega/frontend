@@ -12,6 +12,16 @@ RUN npm ci
 # Copy source code
 COPY . .
 
+# Ta emot argumenten från docker-compose
+ARG VITE_USER_API_URL
+ARG VITE_BOOKING_API_URL
+ARG VITE_REVIEW_API_URL
+
+# Gör dem tillgängliga som miljövariabler för Vites byggprocess
+ENV VITE_USER_API_URL=$VITE_USER_API_URL
+ENV VITE_BOOKING_API_URL=$VITE_BOOKING_API_URL
+ENV VITE_REVIEW_API_URL=$VITE_REVIEW_API_URL
+
 # Build application
 RUN npm run build
 
