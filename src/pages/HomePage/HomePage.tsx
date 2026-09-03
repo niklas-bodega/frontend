@@ -5,11 +5,14 @@ import RoomSection from './components/RoomSection.tsx';
 import { useEffect, useState } from 'react';
 import type { Room } from '../../types/Room.ts';
 import { getAllRooms } from '../../api/RoomApiService.ts';
+import { useRatingsByRoomType } from '../../hooks/useRatingsByRoomType.tsx';
+import ReviewCarousel from './components/ReviewCarousel.tsx';
 
 const Homepage: React.FC = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const ratingByRoomType = useRatingsByRoomType();
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -29,7 +32,8 @@ const Homepage: React.FC = () => {
     <div className="min-h-screen bg-stone-50 selection:bg-orange-100 selection:text-orange-900">
       <Navbar />
       <HomePageHero />
-      {!loading && !error && <RoomSection rooms={rooms} />}
+      <ReviewCarousel/>
+      {!loading && !error && <RoomSection rooms={rooms} ratingsByRoomType={ratingByRoomType} />}
       <Footer />
     </div>
   );

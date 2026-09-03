@@ -9,6 +9,7 @@ import LoadingMessage from '../../../components/LoadingMessage.tsx';
 import ErrorMessage from '../../../components/ErrorMessage.tsx';
 import CancelBookingConfirmationModal from './components/CancelBookingConfirmationModal.tsx';
 import EditBookingModal from '../EditBooking/EditBookingModal.tsx';
+import ReviewModal from '../Review/ReviewModal.tsx';
 
 const MyBookingsPage = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -20,6 +21,7 @@ const MyBookingsPage = () => {
   const [chosenEditBooking, setChosenEditBooking] = useState<Booking | null>(
     null,
   );
+  const [chosenReviewBooking, setChosenReviewBooking] = useState<Booking | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const handleEdit = (booking: Booking) => {
@@ -29,6 +31,10 @@ const MyBookingsPage = () => {
   const handleCancel = (bookingNumber: string) => {
     setChosenBookingNumber(bookingNumber);
   };
+
+  const handleLeaveReview = (booking : Booking) => {
+    setChosenReviewBooking(booking);
+  }
 
   const refreshBookings = async () => {
     try {
@@ -113,11 +119,22 @@ const MyBookingsPage = () => {
           onCancel={() => setChosenBookingNumber(null)}
         />
       )}
-
+      {chosenReviewBooking && (
+      <ReviewModal
+        booking={chosenReviewBooking}
+        onClose={() => setChosenReviewBooking(null)}
+        onSubmitted={() => {
+          setSuccessMessage('Review submitted successfully!');
+          setChosenReviewBooking(null);
+          setTimeout(() => setSuccessMessage(null), 4000);
+        }}
+      />
+      )}
       <BookingPageMainComponent
         bookings={sortedBookings}
         handleEdit={handleEdit}
         handleCancel={handleCancel}
+        handleLeaveReview={handleLeaveReview}
       />
     </>
   );
