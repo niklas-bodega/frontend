@@ -19,21 +19,26 @@ const applyInterceptors = (instance: AxiosInstance) => {
 // Skapa och exportera instanser för de olika tjänsterna
 export const userAxios = applyInterceptors(
   axios.create({
-      baseURL: (import.meta.env.VITE_USER_API_URL ?? "http://localhost:8084").replace(/\/+$/, ""),
+    //todo make env var usable so we dont have to hardcode urls.. *3
+      baseURL: (import.meta.env.VITE_USER_API_URL ?? "https://niklasbodega.lasias.com").replace(/\/+$/, ""),
       withCredentials: true,
   })
 );
 
 export const bookingAxios = applyInterceptors(
   axios.create({
-      baseURL: (import.meta.env.VITE_BOOKING_API_URL ?? "http://localhost:8083").replace(/\/+$/, ""),
-      withCredentials: true,
-  })
+    baseURL: (
+      import.meta.env.VITE_BOOKING_API_URL ?? 'https://niklasbodega.lasias.com'
+    ).replace(/\/+$/, ''),
+    withCredentials: true,
+  }),
 );
 
 export const reviewAxios = applyInterceptors(
   axios.create({
-      baseURL: (import.meta.env.VITE_REVIEW_API_URL ?? "http://localhost:8086").replace(/\/+$/, ""),
-      withCredentials: true,
-  })
+    baseURL: (
+      import.meta.env.VITE_REVIEW_API_URL ?? 'https://niklasbodega.lasias.com'
+    ).replace(/\/+$/, ''),
+    withCredentials: true,
+  }),
 );
