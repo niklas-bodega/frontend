@@ -6,6 +6,9 @@ WORKDIR /build
 # Copy package files
 COPY package*.json ./
 
+# Copy .env file for build-time environment variables
+COPY .env ./
+
 # Install dependencies
 RUN npm ci
 
