@@ -1,73 +1,99 @@
-# React + TypeScript + Vite
+# frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React-gränssnittet för **Niklas Bodega** — ett vandrarhem där gäster söker rum, bokar och recenserar.
 
-Currently, two official plugins are available:
+**Port (Docker/nginx):** 8087  
+**Stack:** React 19, TypeScript, Vite, Tailwind CSS, Axios, React Router
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+I Docker byggs appen till statiska filer och serveras av nginx. I utveckling körs Vite (`npm run dev`).
 
-## React Compiler
+## Vad den här tjänsten gör
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Frontend är ett SPA. Den har ingen egen databas utan anropar de tre backend-API:erna.
 
-## Expanding the ESLint configuration
+| Sida | Vad den visar |
+|------|----------------|
+| `/` | Startsida: hero, recensionskarusell, rum |
+| `/roomspage` | Rumskatalog med betyg |
+| `/searchpage` | Lediga rum efter datum och antal gäster |
+| `/login`, `/register` | Konto |
+| `/oauth2/redirect` | Återkomst efter Google/GitHub |
+| `/newBooking` | Ny bokning (inloggad) |
+| `/myBookings` | Mina bokningar, avbokning, recension |
+| `/settings` | Profil, logga ut överallt, radera konto |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Axios-instanser (med cookies) ligger i `src/api/AxiosConfig.ts`:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- `VITE_USER_API_URL` → user-service
+- `VITE_BOOKING_API_URL` → booking-service
+- `VITE_REVIEW_API_URL` → review-service
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Vad backend-tjänsterna gör
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Tjänst | Port | Ansvar |
+|--------|------|--------|
+| **user-service** | 8084 | Registrering, inloggning, JWT-cookie, profil, OAuth |
+| **booking-service** | 8083 | Rumstyper, tillgänglighet, bokningar |
+| **review-service** | 8086 | Recensioner, medelbetyg, showcase |
+
+## Hur tjänsterna pratar med varandra
+
+Webbläsaren pratar **direkt** med varje API (ingen API-gateway i lokal Compose). JWT ligger i cookien `jwt` (`withCredentials: true`).
+
+```
+Webbläsare (frontend)
+    ├── POST /api/auth/login          → user-service
+    ├── GET  /api/user                → user-service
+    ├── GET  /api/rooms, /api/bookings → booking-service
+    └── GET  /api/review/ratings       → review-service
+
+Bakom kulisserna (syns inte från frontend):
+    user-service    → booking-service   (aktiva bokningar vid kontoradering)
+    booking-service → user-service      (finns användaren vid ny bokning?)
+    review-service  → user-service      (visningsnamn vid ny recension)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Vite bakas in API-URL:erna vid **build**. Ändrade `VITE_*` kräver ombyggnad av frontend-containern.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Starta hela systemet
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Frontend körs tillsammans med backends via Docker Compose i infra-repot. Clone alla repos som syskonmappar:
+
 ```
+niklas-bodega/
+├── niklas-bodega-infra/
+├── user/
+├── booking/
+├── review-service/
+└── frontend/             ← du är här
+```
+
+```bash
+docker network create proxy-network   # om nätverket inte redan finns
+cd ../niklas-bodega-infra
+cp .env.example .env
+docker compose up --build
+```
+
+I `.env` för lokal körning:
+
+```env
+VITE_USER_API_URL=http://localhost:8084
+VITE_BOOKING_API_URL=http://localhost:8083
+VITE_REVIEW_API_URL=http://localhost:8086
+```
+
+Öppna **http://localhost:8087**.
+
+Se [niklas-bodega-infra/README.md](../niklas-bodega-infra/README.md) för övriga miljövariabler och databaser.
+
+## Köra frontend lokalt mot Docker-backends
+
+Om backend redan körs i Compose:
+
+```bash
+npm install
+npm run dev
+```
+
+Avkommentera URL:erna i `.env` så att Vite pekar på `localhost:8084/8083/8086`. Vite använder då en annan port än 8087 (ofta 5173).
