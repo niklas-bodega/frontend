@@ -40,7 +40,7 @@ const Navbar = () => {
             onClick={() => {
               logout();
               navigate('/');
-            }} // what goes here? just logout(), or more?
+            }}
             className="border border-red-700 text-red-700 px-6 py-2 rounded-full text-sm font-bold hover:bg-red-50 transition"
           >
             LOGOUT
@@ -53,9 +53,6 @@ const Navbar = () => {
             LOGIN
           </button>
         )}
-        <button className="bg-orange-900 text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-orange-800 transition">
-          BOOK NOW
-        </button>
       </div>
     </nav>
   );
